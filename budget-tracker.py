@@ -24,7 +24,7 @@ def add_income():
         print("Invalid input! Please enter a number.")
 
 def add_expense():
-    """Add an expense with category and description."""
+    """Add a single expense with category and description."""
     try:
         amount = float(input("Enter expense amount: $"))
         if amount < 0:
@@ -46,6 +46,38 @@ def add_expense():
         print(f"Added expense: ${amount:.2f} for {description} ({category})")
     except ValueError:
         print("Invalid input! Please enter a number for the amount.")
+
+def add_multiple_expenses():
+    """Add multiple expenses in one session."""
+    print("\n=== Add Multiple Expenses ===")
+    print("Enter expenses one by one. Type 'done' when finished.")
+    
+    while True:
+        user_input = input("\nEnter expense amount (or 'done' to finish): $")
+        if user_input.lower() == 'done':
+            print("Finished adding expenses.")
+            break
+        try:
+            amount = float(user_input)
+            if amount < 0:
+                print("Expense cannot be negative!")
+                continue
+            category = input("Enter expense category (e.g., Food, Rent, Entertainment): ").capitalize()
+            description = input("Enter expense description: ")
+            date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            expense = {"amount": amount, "category": category, "description": description, "date": date}
+            budget["expenses"].append(expense)
+            
+            # Update category totals
+            if category in budget["categories"]:
+                budget["categories"][category] += amount
+            else:
+                budget["categories"][category] = amount
+                
+            print(f"Added expense: ${amount:.2f} for {description} ({category})")
+        except ValueError:
+            print("Invalid input! Please enter a number for the amount or 'done' to finish.")
 
 def view_summary():
     """Display budget summary."""
@@ -84,26 +116,29 @@ def main():
     while True:
         print("\n=== Personal Budget Tracker ===")
         print("1. Add Income")
-        print("2. Add Expense")
-        print("3. View Summary")
-        print("4. Plot Expenses")
-        print("5. Exit")
+        print("2. Add Single Expense")
+        print("3. Add Multiple Expenses")
+        print("4. View Summary")
+        print("5. Plot Expenses")
+        print("6. Exit")
         
-        choice = input("Enter your choice (1-5): ")
+        choice = input("Enter your choice (1-6): ")
         
         if choice == "1":
             add_income()
         elif choice == "2":
             add_expense()
         elif choice == "3":
-            view_summary()
+            add_multiple_expenses()
         elif choice == "4":
-            plot_expenses()
+            view_summary()
         elif choice == "5":
+            plot_expenses()
+        elif choice == "6":
             print("Thank you for using the Budget Tracker!")
             break
         else:
-            print("Invalid choice! Please select 1-5.")
+            print("Invalid choice! Please select 1-6.")
 
 if __name__ == "__main__":
     main()
